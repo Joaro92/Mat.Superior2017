@@ -2,9 +2,8 @@
 % Sea y el vector con Dim 1xN que represente los puntos sobre el eje Y
 % Se desea encontrar una recta y = C.t + D que se aproxime a los puntos (X,Y) citados
 % A su vez, conocer el Error de Aproximacion
-function w=mincua(t,y)
+function w=mincua(t,y,n)
   
-    n=input("Ingrese el grado del polinomio: ");
     
     %Armo la matriz A la cual contiene en la primera columna los valores de t, mientras que en la segunda son todos "1"
     for i=(n+1):-1:1
@@ -33,6 +32,6 @@ function w=mincua(t,y)
     x=linspace(min(t)-2,max(t)+2,1000);
     yy
     plot (x,yy,t,y,"*r");
-    
+    w=x0;
 endfunction
     
