@@ -4,7 +4,6 @@
 % A su vez, conocer el Error de Aproximacion
 function w=mincua(t,y,n)
   
-    
     %Armo la matriz A la cual contiene en la primera columna los valores de t, mientras que en la segunda son todos "1"
     for i=(n+1):-1:1
         A(:,n+2-i)=[t.^(i-1)]';
@@ -31,7 +30,12 @@ function w=mincua(t,y,n)
     
     x=linspace(min(t)-2,max(t)+2,1000);
     yy
+    
+    f2 = figure(2);
+    
     plot (x,yy,t,y,"*r");
     w=x0;
 endfunction
+    
+    
     
