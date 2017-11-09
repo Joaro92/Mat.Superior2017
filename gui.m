@@ -21,6 +21,7 @@ global sumaLogXporLogY;
 global sumaLogY;
 global sumaInvY;
 
+
 global errores = struct("lineal", 0, "cuadratica", 0, "exponencial", 0, "potencial", 0, "hiperbola", 0); 
 
 function w=lineal(x)
@@ -269,6 +270,8 @@ text(0.625,0.8,"AMIC", "fontsize", 30,"color","red","fontweight","bold");
 text(0.11,0.4,"Para comenzar ingrese un conjunto de puntos", "fontsize", 15,"color","red");
 
 
+
+
 btn_ingresar = uimenu("label", "Ingresar");%, "handlevisibility", "off");
   btn_conjuntosPuntos = uimenu(btn_ingresar, "label", "Conjunto de Puntos", "callback", "dlg_ingresar_conjuntosPuntos");
 
@@ -280,11 +283,27 @@ btn_funciones = uimenu("label", "Funciones");
     btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Función Parabola", "callback", 'graficar(xs,ys,"cuadratica")');
     btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Función Exponencial", "callback", 'graficar(xs,ys,"exponencial")');
     btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Función Potencial", "callback", 'graficar(xs,ys,"potencial")');
-    btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbóla", "callback", 'graficar(xs,ys,"hiperbola")');
+    btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbóla", "callback", 'mostrarBotones(xs,ys,"hiperbola")'); %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
 btn_salir = uimenu("label", "Salir", "handlevisibility", "off", "callback", "close(gcf)");
 
+
+
+function mostrarBotones(xs,ys,nombreFunc)
+
+	d = figure("MenuBar","None");
+	
+	gp = uibuttongroup (d, "Position", [ 0 0.9 1 1])
+
+		b1 = uicontrol (gp, "string", "Función aproximante", "Position", [ 10 10 150 30 ], "callback", 'msgbox(func)'); %no es lo mejor pero es la forma que encontre
+		b2 = uicontrol (gp, "string", "Detalle del cálculo", "Position", [ 200 10 150 30 ], "callback", '-'); %aca iria la tabla
+		b3 = uicontrol (gp, "string", "Distribución de puntos", "Position", [ 390 10 150 30 ], "callback", 'graficar(xs,ys,nombreFunc)'); %no esta tomando nombreFunc como "hiperbola"
+
+endfunction
+	
+	
+	
 function dlg_ingresar_conjuntosPuntos
   global xs;
   aux1 = inputdlg("Ingresar el conjunto de x (Separados por punto y coma ';')");
