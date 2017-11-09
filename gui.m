@@ -4,6 +4,7 @@ global xs = [1; 2; 3];
 global ys = [5; 10; 15];
 
 global func;
+global decimales = "5";
 
 global p;
 global sumaX;
@@ -21,11 +22,23 @@ global sumaLogXporLogY;
 global sumaLogY;
 global sumaInvY;
 
+global error;
 
-global errores = struct("lineal", 0, "cuadratica", 0, "exponencial", 0, "potencial", 0, "hiperbola", 0); 
+function n=redondeo(num, decimales)
+  aux = sprintf(cstrcat("%8.",decimales,"f"), num);
+  n = str2num(aux);
+endfunction
+
+function s=elevado(cadena)
+  s = "";
+  t = length(cadena);
+  for i = 1:t
+    s = strcat(s, '^', cadena(i));
+  endfor;
+endfunction
 
 function w=lineal(x)
-  global errores;
+  global error;
   global xs;
   global ys;
   global p;
@@ -41,20 +54,23 @@ function w=lineal(x)
   X = AI*B;
   a = X(1,1);
   b = X(2,1);
-
-  func = sprintf("f(x) = %i*x%+i", a, b);
-  w = a.*x+b;
-  E = 0;
-  for i = 1:rows(xs)
-    E += (ys(i) - (a.*xs(i)+b))^2;
-  endfor;
-  %Redondeo a 5 decimales
-  E = sprintf("%8.5f",E)
-  errores.("lineal") = str2num(E);
+  
+  a2 = redondeo(a,"4");
+  b2 = redondeo(b,"4");
+  func = sprintf("f(x) = %i*x%+i", a2, b2);
+  f = a.*x+b;
+  
+  error = -1;
+  if (any(xs == x))
+    i = find(xs == x);
+    error = (ys(i) - f).^2;
+  endif
+  
+  w = f;
 endfunction 
 
 function w=cuadratica(x)
-  global errores;
+  global error;
   global xs;
   global ys;
   global p;
@@ -77,20 +93,23 @@ function w=cuadratica(x)
   b = X(2,1);
   c = X(3,1);
   
-  func = sprintf("f(x) = %i*x^2%+i*x%+i", a, b, c);
-  w = a.*x.^2 + b.*x + c;
+  a2 = redondeo(a,"4");
+  b2 = redondeo(b,"4");
+  c2 = redondeo(c,"4");
+  func = sprintf("f(x) = %i*x^2%+i*x%+i", a2, b2, c2);
+  f = a.*x.^2 + b.*x + c;
   
-  E = 0;
-  for i = 1:rows(xs)
-    E += (ys(i) - (a.*xs(i).^2 + b.*xs(i) + c))^2;
-  endfor;
-  %Redondeo a 5 decimales
-  E = sprintf("%8.5f",E);
-  errores.("cuadratica") = str2num(E);
+  error = -1;
+  if (any(xs == x))
+    i = find(xs == x);
+    error = (ys(i) - f).^2;
+  endif
+  
+  w = f;
 endfunction
 
 function w=exponencial(x)
-  global errores;
+  global error;
   global xs;
   global ys;
   global p;
@@ -107,20 +126,24 @@ function w=exponencial(x)
   a = X(1,1);
   b = exp(X(2,1));
   
-  func = sprintf("f(x) = %i*e^^(%i*x)", b, a);
-  w = b.*e.^(a.*x);
+  a2 = redondeo(a,"4");
+  b2 = redondeo(b,"4");
   
-  E = 0;
-  for i = 1:rows(xs)
-    E += (ys(i) - (b.*e.^(a.*xs(i))))^2;
-  endfor;
-  %Redondeo a 5 decimales
-  E = sprintf("%8.5f",E);
-  errores.("exponencial") = str2num(E);
+  k = sprintf("(%i*x)", a2);
+  func = sprintf("f(x) = %i*e%s", b2, elevado(k));
+  f = b.*e.^(a.*x);
+  
+  error = -1;
+  if (any(xs == x))
+    i = find(xs == x);
+    error = (ys(i) - f).^2;
+  endif
+  
+  w = f;
 endfunction
 
 function w=potencial(x)
-  global errores;
+  global error;
   global xs;
   global ys;
   global p;
@@ -137,20 +160,22 @@ function w=potencial(x)
   a = X(1,1);
   b = exp(X(2,1));
   
-  func = sprintf("f(x) = %i*x^^(%i)", b, a);
-  w = b.*x.^a;
+  a2 = redondeo(a,"4");
+  b2 = redondeo(b,"4");
+  func = sprintf("f(x) = %i*x^(%i)", b2, a2);
+  f = b.*x.^a;
   
-  E = 0;
-  for i = 1:rows(xs)
-    E += (ys(i) - (b.*xs(i).^a))^2;
-  endfor;
-  %Redondeo a 5 decimales
-  E = sprintf("%8.5f",E);
-  errores.("potencial") = str2num(E);
+  error = -1;
+  if (any(xs == x))
+    i = find(xs == x);
+    error = (ys(i) - f).^2;
+  endif
+  
+  w = f;
 endfunction
 
 function w=hiperbola(x)
-  global errores;
+  global error;
   global xs;
   global ys;
   global p;
@@ -167,16 +192,18 @@ function w=hiperbola(x)
   a = 1 / X(1,1);
   b = a * X(2,1);
   
-  func = sprintf("f(x) = %i / (x%+i)", a, b);
-  w = a./(x+b);
+  a2 = redondeo(a,"4");
+  b2 = redondeo(b,"4");
+  func = sprintf("f(x) = %i / (x%+i)", a2, b2);
+  f = a./(x+b);
   
-  E = 0;
-  for i = 1:rows(xs)
-    E += (ys(i) - (a./(xs(i)+b)))^2;
-  endfor;
-  %Redondeo a 5 decimales
-  E = sprintf("%8.5f",E);
-  errores.("hiperbola") = str2num(E);
+  error = -1;
+  if (any(xs == x))
+    i = find(xs == x);
+    error = (ys(i) - f).^2;
+  endif
+  
+  w = f;
 endfunction
 
 function calcularValores(xs,ys)
@@ -196,64 +223,47 @@ function calcularValores(xs,ys)
   global sumaLogY;
   global sumaInvY;
   
-  M = [xs ys];
+  sumaXporY = 0;
+  sumaX2porY = 0;
+  sumaXporLogY = 0;
+  sumaLogY = 0;
+  sumaLogX = 0;
+  sumaLogXporLogY = 0;
+  sumaXporInvY = 0;
+  sumaInvY = 0;
+  
   p = rows(xs);
+  M = [xs ys];
+  M2 = M .* M;
+  M3 = M .* M .* M;
+  M4 = M .* M .* M .* M;
+  
   sumaX = sum(M)(1,1);
   sumaY = sum(M)(1,2);
-  sumaXporY = 0;
+  sumaXcuadrado = sum(M2)(1,1);
+  sumaXcubo = sum(M3)(1,1);
+  sumaXcuarta = sum(M4)(1,1);
+  sumaLogX2 = 0;
+  
   for i = 1:p
     sumaXporY += M(i,1) * M(i,2);
-  endfor;
-  sumaX2porY = 0;
-  for i = 1:p
     sumaX2porY += M(i,1)^2 * M(i,2);
-  endfor;
-  M2 = M .* M;
-  sumaXcuadrado = sum(M2)(1,1);
-  M3 = M .* M .* M;
-  sumaXcubo = sum(M3)(1,1);
-  M4 = M .* M .* M .* M;
-  sumaXcuarta = sum(M4)(1,1);
-  clear M2;
-  clear M3;
-  clear M4;
-  sumaXporLogY = 0;
-  for i = 1:p
     sumaXporLogY += M(i,1) * log(M(i,2));
-  endfor;
-  sumaLogY = 0;
-  for i = 1:p
     sumaLogY += log(M(i,2));
-  endfor;
-  sumaLogX = 0;
-  for i = 1:p
     sumaLogX += log(M(i,1));
-  endfor;
-  sumaLogX2 = 0;
-  for i = 1:p
     sumaLogX2 += (log(M(i,1))) ^ 2;
-  endfor;
-  sumaLogXporLogY = 0;
-  for i = 1:p
     sumaLogXporLogY += log(M(i,1)) * log(M(i,2));
-  endfor;
-  sumaXporInvY = 0;
-  for i = 1:p
     sumaXporInvY += M(i,1) * (1 / M(i,2));
-  endfor;
-  sumaInvY = 0;
-  for i = 1:p
     sumaInvY += 1 / M(i,2);
   endfor;
 endfunction
 
 function resolverFunciones(xs)
-  x = linspace(min(xs), max(xs));
-  lineal(x);
-  cuadratica(x);
-  exponencial(x);
-  potencial(x);
-  hiperbola(x);
+  lineal(xs);
+  cuadratica(xs);
+  exponencial(xs);
+  potencial(xs);
+  hiperbola(xs);
 endfunction
 
 % Deshabilita los botones de menu que vienen por defecto
@@ -262,20 +272,34 @@ calcularValores(xs,ys);
 resolverFunciones(xs);
 
 % Ventana Principal
-figure('Position',[400,120,570,380]);
+global h = figure(1);
+set(h, 'Position', [330,136,720,440], 'graphicssmoothing', "on");
+
+integrantes = "Joaquin Rodriguez\nLaura Ferreri\nDamian Javier Sanchez\nMartín Bruno\nEzequiel Alonso";
+
+Mat = [xs ys];
+matriz = sprintf("%8.3f %8.3f\n", flip(rot90(Mat)));
+
 box on;
 axis off;
-text(0.15,0.8,"Bienvenido a ", "fontsize", 30);
-text(0.625,0.8,"AMIC", "fontsize", 30,"color","red","fontweight","bold");
-text(0.11,0.4,"Para comenzar ingrese un conjunto de puntos", "fontsize", 15,"color","red");
+text(0.280,0.9, "Bienvenido a ", "fontsize", 30);
+text(0.760,0.9, "AMIC", "fontsize", 30, "color", "red", "fontweight", "bold");
+text(0.0,0.6, "Integrantes, Grupo Mixto 9:", "fontsize", 18, "color", "blue", "fontweight", "bold");
+text(0.14,0.4, integrantes, "fontsize", 16, "color", "blue");
+text(0.790,0.70, "Conjunto de puntos actuales", "fontsize", 14, "color", "black");
+text(0.840,0.60, "     X       Y\n-------------------", "fontsize", 14, "color", "black", "fontname", "Consolas");
+text(0.840,0.48, matriz, "fontsize", 14, "color", "black", "fontname", "Consolas");
+refresh();
 
 
 
-
-btn_ingresar = uimenu("label", "Ingresar");%, "handlevisibility", "off");
+btn_ingresar = uimenu("label", "Ingresar");
   btn_conjuntosPuntos = uimenu(btn_ingresar, "label", "Conjunto de Puntos", "callback", "dlg_ingresar_conjuntosPuntos");
-
-btn_mostrar = uimenu("label", "Mostrar Puntos", "callback", "mostrarvalores(xs,ys)");
+  btn_decimales = uimenu(btn_ingresar, "label", "Decimales (redondeo)", "callback", "dlg_ingresar_decimales");
+  
+btn_mostrar = uimenu("label", "Mostrar");
+  btn_mostrarPuntos = uimenu(btn_mostrar, "label", "Mostrar Puntos", "callback", "mostrarvalores(xs,ys)");
+  btn_verErrores = uimenu(btn_mostrar, "label", "Mostrar Errores", "callback", "mostrarError");
   
 btn_funciones = uimenu("label", "Funciones");
   btn_aproximacion_elegir = uimenu(btn_funciones, "label", "Aproximar Mediante:");
@@ -283,12 +307,59 @@ btn_funciones = uimenu("label", "Funciones");
     btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Función Parabola", "callback", 'graficar(xs,ys,"cuadratica")');
     btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Función Exponencial", "callback", 'graficar(xs,ys,"exponencial")');
     btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Función Potencial", "callback", 'graficar(xs,ys,"potencial")');
-    btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbóla", "callback", 'mostrarBotones(xs,ys,"hiperbola")'); %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbola", "callback", 'graficar(xs,ys,"hiperbola")');
 
 btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
+
 btn_salir = uimenu("label", "Salir", "handlevisibility", "off", "callback", "close(gcf)");
 
+function comparar
+  global xs;
+  global ys;
+  global error;
 
+  i = rows(xs);
+  I = rot90(flip(1:i));
+  yLineal = [];
+  yCuadratica = [];
+  yExponencial = [];
+  yPotencial = [];
+  yHiperbola = [];
+  eLineal = [];
+  eCuadratica = [];
+  eExponencial = [];
+  ePotencial = [];
+  eHiperbola = [];
+  
+  for j = 1:i
+    yLineal(j,1) = lineal(xs(j)); 
+    eLineal(j,1) = error;
+  endfor;
+  for j = 1:i
+    yCuadratica(j,1) = cuadratica(xs(j));
+    eCuadratica(j,1) = error;
+  endfor;
+  for j = 1:i
+    yExponencial(j,1) = exponencial(xs(j)); 
+    eExponencial(j,1) = error;
+  endfor;
+  for j = 1:i
+    yPotencial(j,1) = potencial(xs(j)); 
+    ePotencial(j,1) = error;
+  endfor;
+  for j = 1:i
+    yHiperbola(j,1) = hiperbola(xs(j));
+    eHiperbola(j,1) = error;
+  endfor;
+  
+  M = [I xs ys yLineal yCuadratica yExponencial yPotencial yHiperbola eLineal eCuadratica eExponencial ePotencial eHiperbola];
+  matriz = sprintf("[ %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f  ]\n", flip(rot90(M)));
+  printf("\n\n");
+  printf("      i         X       Y       Mod.1    Mod.2    Mod.3    Mod.4    Mod.5    Err.1    Err.2    Err.3    Err.4    Err.5\n");
+  printf("   ====================================================================================================================\n");
+  disp(matriz);
+  %msgbox(disp(M));
+ endfunction
 
 function mostrarBotones(xs,ys,nombreFunc)
 
@@ -296,13 +367,11 @@ function mostrarBotones(xs,ys,nombreFunc)
 	
 	gp = uibuttongroup (d, "Position", [ 0 0.9 1 1])
 
-		b1 = uicontrol (gp, "string", "Función aproximante", "Position", [ 10 10 150 30 ], "callback", 'msgbox(func)'); %no es lo mejor pero es la forma que encontre
-		b2 = uicontrol (gp, "string", "Detalle del cálculo", "Position", [ 200 10 150 30 ], "callback", '-'); %aca iria la tabla
-		b3 = uicontrol (gp, "string", "Distribución de puntos", "Position", [ 390 10 150 30 ], "callback", 'graficar(xs,ys,nombreFunc)'); %no esta tomando nombreFunc como "hiperbola"
+		b1 = uicontrol (gp, "string", "FunciÃ³n aproximante", "Position", [ 10 10 150 30 ], "callback", 'msgbox(func)'); %no es lo mejor pero es la forma que encontre
+		b2 = uicontrol (gp, "string", "Detalle del cÃ¡lculo", "Position", [ 200 10 150 30 ], "callback", '-'); %aca iria la tabla
+		b3 = uicontrol (gp, "string", "DistribuciÃ³n de puntos", "Position", [ 390 10 150 30 ], "callback", 'graficar(xs,ys,nombreFunc)'); %no esta tomando nombreFunc como "hiperbola"
 
 endfunction
-	
-	
 	
 function dlg_ingresar_conjuntosPuntos
   global xs;
@@ -318,18 +387,36 @@ function dlg_ingresar_conjuntosPuntos
   xs = str2num(x);
   ys = str2num(y);
   
+  figure(1);
+  drawnow();
   calcularValores(xs,ys);
+  resolverFunciones(xs);
+endfunction
+
+function dlg_ingresar_decimales
+  global decimales;
+  global xs;
+  
+  texto = "Ingrese la cantidad de decimales que se mostraran\nActualmente: ";
+  texto = cstrcat(texto,decimales);
+  aux = inputdlg(texto);
+  decimales = num2str(aux{1,1});
   resolverFunciones(xs);
 endfunction
 
 function graficar(xs,ys,funcion)
   global func;
+  global h;
   f = str2func(funcion);
-  
   x = linspace(min(xs)-2, max(xs)+2);
+    
   plot(x, f(x), xs, ys, "*r");
-  xlabel(func);
-  title(cstrcat("Aprox. ", funcion), 'FontSize', 20, 'fontweight', "bold");
+  set(h, 'Position', [314,150,732,520]);
+  
+  xlabel("Eje x", 'Fontsize', 12);
+  ylabel("Eje y", 'Fontsize', 12);
+  title(cstrcat("Aproximación ", funcion), 'FontSize', 18, 'fontweight', "bold");
+  legend(func);
 endfunction
 
 function mostrarvalores(xs,ys)
@@ -337,3 +424,39 @@ function mostrarvalores(xs,ys)
   msgbox(puntos, "Conjunto de Puntos");
 endfunction
   
+function mostrarError()
+  global error;
+  global xs;
+  global decimales;
+  
+  errLineal = 0;
+  errCuadratica = 0;
+  errExponencial = 0;
+  errPotencial = 0;
+  errHiperbola = 0;
+  
+  for i = 1:rows(xs)
+    lineal(xs(i));
+    errLineal += error;
+    cuadratica(xs(i));
+    errCuadratica += error;
+    exponencial(xs(i));
+    errExponencial += error;
+    potencial(xs(i));
+    errPotencial += error;
+    hiperbola(xs(i));
+    errHiperbola += error;
+  endfor;
+  
+  errLineal = redondeo(errLineal,decimales);
+  errCuadratica = redondeo(errCuadratica,decimales);
+  errExponencial = redondeo(errExponencial,decimales);
+  errPotencial = redondeo(errPotencial,decimales);
+  errHiperbola = redondeo(errHiperbola,decimales);
+  
+  msj = "Error de cada aproximaciÃ³n: \n\n";
+  msj = cstrcat(msj, "lineal = ", disp(errLineal), "cuadratica = ", disp(errCuadratica));
+  msj = cstrcat(msj, "exponencial = ", disp(errExponencial), "potencial = ", disp(errPotencial));
+  msj = cstrcat(msj, "hiperbola = ", disp(errHiperbola));
+  msgbox(disp(msj));
+endfunction
