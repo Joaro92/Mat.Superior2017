@@ -3,7 +3,7 @@
 > APROXIMACIÓN POR MINIMOS CUADRADOS
 
 Checklist
-- [ ] Ingresar Conjunto de puntos (x, y)
+- [X] Ingresar Conjunto de puntos (x, y)
 - [X] Funciones Aproximantes
 - [X] Obtener el error de cada aproximación
 - [X] Mostrar la funcion aproximante
