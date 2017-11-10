@@ -1,11 +1,10 @@
 clear
 
+%% ++++++++++++++++++++++++ DEFINICI覰 DE VARIABLES ++++++++++++++++++++++++++
 global xs = [1; 2; 3];
 global ys = [5; 10; 15];
-
 global func;
 global decimales = "5";
-
 global p;
 global sumaX;
 global sumaY;
@@ -21,9 +20,10 @@ global sumaLogX2;
 global sumaLogXporLogY;
 global sumaLogY;
 global sumaInvY;
-
 global error;
 
+
+%% ++++++++++++++++++++++++++++ FUNCIONES ++++++++++++++++++++++++++++++++++++
 function n=redondeo(num, decimales)
   aux = sprintf(cstrcat("%8.",decimales,"f"), num);
   n = str2num(aux);
@@ -266,57 +266,140 @@ function resolverFunciones(xs)
   hiperbola(xs);
 endfunction
 
-% Deshabilita los botones de menu que vienen por defecto
-%f = figure("MenuBar","None");
-calcularValores(xs,ys);
-resolverFunciones(xs);
+%% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-% Ventana Principal
-global h = figure(1);
-set(h, 'Position', [330,136,720,440], 'graphicssmoothing', "on");
+%  Mat = [xs ys];
+%  matriz = sprintf("%8.3f %8.3f\n", flip(rot90(Mat)));
 
-integrantes = "Joaquin Rodriguez\nLaura Ferreri\nDamian Javier Sanchez\nMart韓 Bruno\nEzequiel Alonso";
+function mostrarBotones(xs,ys,nombreFunc)
 
-Mat = [xs ys];
-matriz = sprintf("%8.3f %8.3f\n", flip(rot90(Mat)));
+	d = figure("MenuBar","None");
+	
+	gp = uibuttongroup (d, "Position", [ 0 0.9 1 1])
 
-box on;
-axis off;
-text(0.280,0.9, "Bienvenido a ", "fontsize", 30);
-text(0.760,0.9, "AMIC", "fontsize", 30, "color", "red", "fontweight", "bold");
-text(0.0,0.6, "Integrantes, Grupo Mixto 9:", "fontsize", 18, "color", "blue", "fontweight", "bold");
-text(0.14,0.4, integrantes, "fontsize", 16, "color", "blue");
-text(0.790,0.70, "Conjunto de puntos actuales", "fontsize", 14, "color", "black");
-text(0.840,0.60, "     X       Y\n-------------------", "fontsize", 14, "color", "black", "fontname", "Consolas");
-text(0.840,0.48, matriz, "fontsize", 14, "color", "black", "fontname", "Consolas");
-refresh();
+		b1 = uicontrol (gp, "string", "Funci贸n aproximante", "Position", [ 10 10 150 30 ], "callback", 'msgbox(func)'); %no es lo mejor pero es la forma que encontre
+		b2 = uicontrol (gp, "string", "Detalle del c谩lculo", "Position", [ 200 10 150 30 ], "callback", '-'); %aca iria la tabla
+		b3 = uicontrol (gp, "string", "Distribuci贸n de puntos", "Position", [ 390 10 150 30 ], "callback", 'graficar(xs,ys,nombreFunc)'); %no esta tomando nombreFunc como "hiperbola"
+
+endfunction
+
+%text(0.790,0.70, "Conjunto de puntos actuales", "fontsize", 14, "color", "black");
+%text(0.840,0.60, "     X       Y\n-------------------", "fontsize", 14, "color", "black", "fontname", "Consolas");
+%text(0.840,0.48, matriz, "fontsize", 14, "color", "black", "fontname", "Consolas");
+
+%   btn_mostrar = uimenu("label", "Mostrar");
+%   btn_mostrarPuntos = uimenu(btn_mostrar, "label", "Mostrar Puntos", "callback", "mostrarvalores(xs,ys)");
+%   btn_verErrores = uimenu(btn_mostrar, "label", "Mostrar Errores", "callback", "mostrarError");
 
 
+% , "backgroundcolor", "grey"
 
-btn_ingresar = uimenu("label", "Ingresar");
-  btn_conjuntosPuntos = uimenu(btn_ingresar, "label", "Conjunto de Puntos", "callback", "dlg_ingresar_conjuntosPuntos");
-  btn_decimales = uimenu(btn_ingresar, "label", "Decimales (redondeo)", "callback", "dlg_ingresar_decimales");
+function main % Ventana de Bienvenido
+  global h = figure("name", "Aproximaci髇 por Minimos Cuadrados", "position", [330,136,720,440], "graphicssmoothing", "on", "menubar", "none");
+  box on;
+  axis off; 
+  integrantes = "- Joaquin Rodriguez\n- Laura Ferreri\n- Damian Javier Sanchez\n- Mart韓 Bruno\n- Ezequiel Alonso";
   
-btn_mostrar = uimenu("label", "Mostrar");
-  btn_mostrarPuntos = uimenu(btn_mostrar, "label", "Mostrar Puntos", "callback", "mostrarvalores(xs,ys)");
-  btn_verErrores = uimenu(btn_mostrar, "label", "Mostrar Errores", "callback", "mostrarError");
+  uicontrol("style", "text", "string", "Bienvenido a", "fontsize", 26, "position",[200 330 230 50], "backgroundcolor", "white");
+  uicontrol("style", "text", "string", "AMIC", "fontsize", 26, "foregroundcolor", "red", "position",[422 330 100 50], "backgroundcolor", "white");
+  uicontrol("style", "text", "string", "Integrantes, Grupo Mixto 9:", "fontsize", 14, "foregroundcolor", "blue", "position",[234 264 260 50], "backgroundcolor", "white");
+  uicontrol("style", "text", "string", integrantes, "fontsize", 12, "foregroundcolor", "blue", "fontangle", "italic", "position",[264 156 200 110], "backgroundcolor", "white");
+  uicontrol("string", "Comenzar", "position",[290 52 150 36], "callback", "comenzar");
+endfunction
+
+function comenzar % Empieza de cero ingresando los valores
+  global h;
+  global xs;
+  global ys;
   
-btn_funciones = uimenu("label", "Funciones");
-  btn_aproximacion_elegir = uimenu(btn_funciones, "label", "Aproximar Mediante:");
-    btn_recta = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Recta", "callback", 'graficar(xs,ys,"lineal")');
-    btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Parabola", "callback", 'graficar(xs,ys,"cuadratica")');
-    btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Exponencial", "callback", 'graficar(xs,ys,"exponencial")');
-    btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Potencial", "callback", 'graficar(xs,ys,"potencial")');
-    btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Hip閞bola", "callback", 'graficar(xs,ys,"hiperbola")');
+  close(h);
+  
+  global p;
+  global xs;
+  global ys;
+  global decimales;
+  p = 3;
+  xs = [3;4;5];
+  yx = [6;7;8];
+  decimales = "4";
+  %dlg_ingresarDatos;
+  principal;
+endfunction
 
-btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
+function principal
+  global h;
+  global xs;
+  global ys;
+  
+  h = figure("name", "Aproximaci髇 por Minimos Cuadrados", "position", [330,136,780,500], "graphicssmoothing", "on");
+  calcularValores(xs, ys);
+  resolverFunciones(xs);
+  btn_ingresar = uimenu("label", "Ingresar");
+    btn_conjuntosPuntos = uimenu(btn_ingresar, "label", "Nuevo Set de datos", "callback", "comenzar");
 
-btn_salir = uimenu("label", "Salir", "handlevisibility", "off", "callback", "close(gcf)");
+  btn_funciones = uimenu("label", "Funciones");
+    btn_aproximacion_elegir = uimenu(btn_funciones, "label", "Aproximar Mediante:");
+      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Recta", "callback", 'graficar(xs,ys,"lineal")');
+      btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Parabola", "callback", 'graficar(xs,ys,"cuadratica")');
+      btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Exponencial", "callback", 'graficar(xs,ys,"exponencial")');
+      btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Potencial", "callback", 'graficar(xs,ys,"potencial")');
+      btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Funci髇 Hip閞bola", "callback", 'graficar(xs,ys,"hiperbola")');
+
+  btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
+endfunction
+
+function dlg_ingresarDatos
+  global xs;
+  global ys;
+  global p;
+  global decimales;
+  
+  puntos = inputdlg("Cuantos puntos (x,y) desea ingresar?");
+  p = str2num(cell2mat(puntos));
+  
+  flag = false
+  do
+    valoresX = inputdlg("Ingresar el conjunto de x (Separados por punto y coma ';')");
+    valoresX = cell2mat(valoresX);
+    valoresX = cstrcat("[",valoresX,"]");
+    xs = str2num(valoresX);
+    if (rows(xs) == p)
+      flag = true;
+    else
+      errordlg("Ingreso una cantidad de valores distinto de lo especificado");
+    endif;
+  until (flag);
+
+  flag = false;
+  do
+    valoresY = inputdlg("Ingresar el conjunto de y (Separados por punto y coma ';')");
+    valoresY = cell2mat(valoresY);
+    valoresY = cstrcat("[",valoresY,"]");
+    ys = str2num(valoresY);
+    if (rows(ys) == p)
+      flag = true;
+    else
+      errordlg("Ingreso una cantidad de valores distinto de lo especificado");
+    endif;
+  until (flag);
+  
+  dec = inputdlg("Ingrese la cantidad de decimales (redondeo) que se mostraran");
+  decimales = cell2mat(dec);
+endfunction
+
+function salir
+  global h;
+  close(h);
+  principal;
+endfunction
 
 function comparar
+  global h;
   global xs;
   global ys;
   global error;
+  global decimales;
 
   i = rows(xs);
   I = rot90(flip(1:i));
@@ -333,98 +416,62 @@ function comparar
   
   for j = 1:i
     yLineal(j,1) = lineal(xs(j)); 
-    eLineal(j,1) = error;
-  endfor;
-  for j = 1:i
+    eLineal(j,1) = redondeo(error,decimales);
     yCuadratica(j,1) = cuadratica(xs(j));
-    eCuadratica(j,1) = error;
-  endfor;
-  for j = 1:i
+    eCuadratica(j,1) = redondeo(error,decimales);
     yExponencial(j,1) = exponencial(xs(j)); 
-    eExponencial(j,1) = error;
-  endfor;
-  for j = 1:i
+    eExponencial(j,1) = redondeo(error,decimales);
     yPotencial(j,1) = potencial(xs(j)); 
-    ePotencial(j,1) = error;
-  endfor;
-  for j = 1:i
+    ePotencial(j,1) = redondeo(error,decimales);
     yHiperbola(j,1) = hiperbola(xs(j));
-    eHiperbola(j,1) = error;
+    eHiperbola(j,1) = redondeo(error,decimales);
   endfor;
   
-  M = [I xs ys yLineal yCuadratica yExponencial yPotencial yHiperbola eLineal eCuadratica eExponencial ePotencial eHiperbola];
-  matriz = sprintf("[ %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f  ]\n", flip(rot90(M)));
+  M1 = [I xs ys yLineal yCuadratica yExponencial yPotencial yHiperbola];
+  M2 = [I eLineal eCuadratica eExponencial ePotencial eHiperbola];
+  
+  clf;
+  matriz1 = "      i         Xi       Yi       Mod.1     Mod.2     Mod.3     Mod.4     Mod.5     \n";
+  matriz1 = cstrcat(matriz1, "   ===============================================================================     \n");
+  matriz1 = cstrcat(matriz1, disp(M1));
+  matriz2 = "      i       Err.1     Err.2     Err.3     Err.4     Err.5      \n";
+  matriz2 = cstrcat(matriz2, "   ==============================================================     \n");
+  matriz2 = cstrcat(matriz2, disp(M2));
+
+  % "backgroundcolor", "white"
+  set(h, "name", "Comparaci髇 de Funciones");
+  set(h, "position", [330,136,780,600]);
+  uimenu("label", "Volver", "callback", "salir");
+  uicontrol("style", "text", "string", "Comparaci髇 de f(x)", "fontsize", 14, "position", [85 528 600 30], "backgroundcolor", "white");
+  uicontrol("style", "text", "string", matriz1, "fontname", "Consolas", "position", [80 276 600 250], "backgroundcolor", "white");
+  uicontrol("style", "text", "string", "Error de f(x)", "fontsize", 14, "position", [85 252 600 30], "backgroundcolor", "white");
+  uicontrol("style", "text", "string", matriz2, "fontname", "Consolas", "position", [80 0 600 250], "backgroundcolor", "white"); 
+  menorError;
+  
+  %% Esto se muestra por Consola
+  matriz = sprintf("[ %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f  ]\n", flip(rot90(M1)));
   printf("\n\n");
   printf("      i         X       Y       Mod.1    Mod.2    Mod.3    Mod.4    Mod.5    Err.1    Err.2    Err.3    Err.4    Err.5\n");
   printf("   ====================================================================================================================\n");
   disp(matriz);
-  %msgbox(disp(M));
- endfunction
-
-function mostrarBotones(xs,ys,nombreFunc)
-
-	d = figure("MenuBar","None");
-	
-	gp = uibuttongroup (d, "Position", [ 0 0.9 1 1])
-
-		b1 = uicontrol (gp, "string", "Funci贸n aproximante", "Position", [ 10 10 150 30 ], "callback", 'msgbox(func)'); %no es lo mejor pero es la forma que encontre
-		b2 = uicontrol (gp, "string", "Detalle del c谩lculo", "Position", [ 200 10 150 30 ], "callback", '-'); %aca iria la tabla
-		b3 = uicontrol (gp, "string", "Distribuci贸n de puntos", "Position", [ 390 10 150 30 ], "callback", 'graficar(xs,ys,nombreFunc)'); %no esta tomando nombreFunc como "hiperbola"
-
-endfunction
-	
-function dlg_ingresar_conjuntosPuntos
-  global xs;
-  aux1 = inputdlg("Ingresar el conjunto de x (Separados por punto y coma ';')");
-  aux2 = cell2mat(aux1);
-  x = cstrcat("[",aux2,"]");
-
-  global ys;
-  aux1 = inputdlg("Ingresar el conjunto de y (Separados por punto y coma ';')");
-  aux2 = cell2mat(aux1);
-  y = cstrcat("[",aux2,"]");
-  
-  xs = str2num(x);
-  ys = str2num(y);
-  
-  figure(1);
-  drawnow();
-  calcularValores(xs,ys);
-  resolverFunciones(xs);
-endfunction
-
-function dlg_ingresar_decimales
-  global decimales;
-  global xs;
-  
-  texto = "Ingrese la cantidad de decimales que se mostraran\nActualmente: ";
-  texto = cstrcat(texto,decimales);
-  aux = inputdlg(texto);
-  decimales = num2str(aux{1,1});
-  resolverFunciones(xs);
 endfunction
 
 function graficar(xs,ys,funcion)
   global func;
   global h;
+  
   f = str2func(funcion);
   x = linspace(min(xs)-2, max(xs)+2);
     
   plot(x, f(x), xs, ys, "*r");
   set(h, 'Position', [314,150,732,520]);
-  
   xlabel("Eje x", 'Fontsize', 12);
   ylabel("Eje y", 'Fontsize', 12);
   title(cstrcat("Aproximaci髇 ", funcion), 'FontSize', 18, 'fontweight', "bold");
   legend(func);
 endfunction
 
-function mostrarvalores(xs,ys)
-  puntos = cstrcat("Conjunto de x = [ ", num2str(rot90(xs)), " ]\n", "Conjunto de y = [ ", num2str(rot90(ys)), " ]");
-  msgbox(puntos, "Conjunto de Puntos");
-endfunction
-  
-function mostrarError()
+function menorError
   global error;
   global xs;
   global decimales;
@@ -454,9 +501,30 @@ function mostrarError()
   errPotencial = redondeo(errPotencial,decimales);
   errHiperbola = redondeo(errHiperbola,decimales);
   
-  msj = "Error de cada aproximaci贸n: \n\n";
-  msj = cstrcat(msj, "lineal = ", disp(errLineal), "cuadratica = ", disp(errCuadratica));
-  msj = cstrcat(msj, "exponencial = ", disp(errExponencial), "potencial = ", disp(errPotencial));
-  msj = cstrcat(msj, "hiperbola = ", disp(errHiperbola));
-  msgbox(disp(msj));
+  M = [ errLineal errCuadratica errExponencial errPotencial errHiperbola ];
+  minim = find(M == min(M));
+
+  result = "La(s) funcion(es) aproximantes con el minimo error son:\n";
+  
+  for i = 1:columns(minim)
+    if (minim(i) == 1)
+      disp("entre");
+      result = cstrcat(result, "    * Lineal\n");
+    endif;
+    if (minim(i) == 2)
+      result = cstrcat(result, "    * Cuadratica\n");
+    endif;
+    if (minim(i) == 3)
+      result = cstrcat(result, "    * Exponencial\n");
+    endif;
+    if (minim(i) == 4)
+      result = cstrcat(result, "    * Potencial\n");
+    endif;
+    if (minim(i) == 5)
+      result = cstrcat(result, "    * Hiperbola\n");
+    endif;    
+  endfor;
+  msgbox(result);
 endfunction
+
+main;
