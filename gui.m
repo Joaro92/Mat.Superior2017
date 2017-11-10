@@ -1,10 +1,13 @@
-
 clear
-
 
 %% ++++++++++++++++++++++++ DEFINICIÓN DE VARIABLES ++++++++++++++++++++++++++
 global xs = [1; 2; 3];
 global ys = [5; 10; 15];
+global A;
+global B;
+global a2;
+global b2;
+global c2;
 global func;
 global decimales = "5";
 global p;
@@ -23,7 +26,6 @@ global sumaLogXporLogY;
 global sumaLogY;
 global sumaInvY;
 global error;
-global nombreFunc;
 
 %% ++++++++++++++++++++++++++++ FUNCIONES ++++++++++++++++++++++++++++++++++++
 function n=redondeo(num, decimales)
@@ -49,6 +51,11 @@ function w=lineal(x)
   global sumaXporY;
   global sumaXcuadrado;
   global func;
+  global decimales;
+  global A;
+  global B;
+  global a2;
+  global b2;
   
   A = [ sumaXcuadrado sumaX ; sumaX p ];
   B = [ sumaXporY ; sumaY ];
@@ -57,8 +64,8 @@ function w=lineal(x)
   a = X(1,1);
   b = X(2,1);
   
-  a2 = redondeo(a,"4");
-  b2 = redondeo(b,"4");
+  a2 = redondeo(a,decimales);
+  b2 = redondeo(b,decimales);
   func = sprintf("f(x) = %i*x%+i", a2, b2);
   f = a.*x+b;
   
@@ -84,6 +91,10 @@ function w=cuadratica(x)
   global sumaXcubo;
   global sumaXcuarta;
   global func;
+  global decimales;
+  global a2;
+  global b2;
+  global c2;
   
   A = [ sumaXcuarta sumaXcubo sumaXcuadrado
         sumaXcubo sumaXcuadrado sumaX
@@ -95,9 +106,9 @@ function w=cuadratica(x)
   b = X(2,1);
   c = X(3,1);
   
-  a2 = redondeo(a,"4");
-  b2 = redondeo(b,"4");
-  c2 = redondeo(c,"4");
+  a2 = redondeo(a,decimales);
+  b2 = redondeo(b,decimales);
+  c2 = redondeo(c,decimales);
   func = sprintf("f(x) = %i*x^2%+i*x%+i", a2, b2, c2);
   f = a.*x.^2 + b.*x + c;
   
@@ -120,7 +131,10 @@ function w=exponencial(x)
   global sumaXporLogY;
   global sumaLogY;
   global func;
-  
+  global decimales;
+  global a2;
+  global b2;
+    
   A = [ sumaXcuadrado sumaX ; sumaX p ];
   B = [ sumaXporLogY ; sumaLogY ];
   AI = inv(A);
@@ -128,11 +142,10 @@ function w=exponencial(x)
   a = X(1,1);
   b = exp(X(2,1));
   
-  a2 = redondeo(a,"4");
-  b2 = redondeo(b,"4");
+  a2 = redondeo(a,decimales);
+  b2 = redondeo(b,decimales);
   
-  k = sprintf("(%i*x)", a2);
-  func = sprintf("f(x) = %i*e%s", b2, elevado(k));
+  func = sprintf("f(x) = %i*e^(%i*x)", b2, a2);
   f = b.*e.^(a.*x);
   
   error = -1;
@@ -154,7 +167,10 @@ function w=potencial(x)
   global sumaLogXporLogY;
   global sumaLogY;
   global func;
-  
+  global decimales;
+  global a2;
+  global b2;
+    
   A = [ sumaLogX2 sumaLogX ; sumaLogX p ];
   B = [ sumaLogXporLogY ; sumaLogY ];
   AI = inv(A);
@@ -162,8 +178,8 @@ function w=potencial(x)
   a = X(1,1);
   b = exp(X(2,1));
   
-  a2 = redondeo(a,"4");
-  b2 = redondeo(b,"4");
+  a2 = redondeo(a,decimales);
+  b2 = redondeo(b,decimales);
   func = sprintf("f(x) = %i*x^(%i)", b2, a2);
   f = b.*x.^a;
   
@@ -186,7 +202,10 @@ function w=hiperbola(x)
   global sumaXporInvY;
   global sumaInvY;
   global func;
-  
+  global decimales;
+  global a2;
+  global b2;
+    
   A = [ sumaXcuadrado sumaX ; sumaX p ];
   B = [ sumaXporInvY ; sumaInvY ];
   AI = inv(A);
@@ -194,8 +213,8 @@ function w=hiperbola(x)
   a = 1 / X(1,1);
   b = a * X(2,1);
   
-  a2 = redondeo(a,"4");
-  b2 = redondeo(b,"4");
+  a2 = redondeo(a,decimales);
+  b2 = redondeo(b,decimales);
   func = sprintf("f(x) = %i / (x%+i)", a2, b2);
   f = a./(x+b);
   
@@ -288,7 +307,7 @@ endfunction
 % , "backgroundcolor", "grey"
 
 function main % Ventana de Bienvenido
-  global h = figure("name", "Aproximación por Minimos Cuadrados", "position", [330,136,720,440], "graphicssmoothing", "on", "menubar", "none");
+  global h = figure("name", "Aproximación por Minimos Cuadrados", "position", [330,140,720,440], "graphicssmoothing", "on", "menubar", "none");
   box on;
   axis off; 
   integrantes = "- Joaquin Rodriguez\n- Laura Ferreri\n- Damian Javier Sanchez\n- Martín Bruno\n- Ezequiel Alonso";
@@ -307,25 +326,25 @@ function comenzar % Empieza de cero ingresando los valores
   
   close(h);
   
-  %global p;
-  %global xs;
-  %global ys;
-  %global decimales;
-  %p = 3;
-  %xs = [3;4;5];
-  %yx = [6;7;8];
-  %decimales = "4";
+  global p;
+  global xs;
+  global ys;
+  global decimales;
+  p = 3;
+  xs = [3;4;5];
+  yx = [6;7;8];
+  decimales = "4";
   
-  dlg_ingresarDatos;
+  %dlg_ingresarDatos;
   principal;
 endfunction
 
-function principal
+function principal % Ventana Principal
   global h;
   global xs;
   global ys;
   
-  h = figure("name", "Aproximación por Minimos Cuadrados", "position", [330,136,780,500], "graphicssmoothing", "on");
+  h = figure("name", "Aproximación por Minimos Cuadrados", "position", [330,95,780,500], "graphicssmoothing", "on");
   calcularValores(xs, ys);
   resolverFunciones(xs);
   btn_ingresar = uimenu("label", "Ingresar");
@@ -333,7 +352,7 @@ function principal
 
   btn_funciones = uimenu("label", "Funciones");
     btn_aproximacion_elegir = uimenu(btn_funciones, "label", "Aproximar Mediante:");
-      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Función Recta", "callback", 'mostrarOpciones(xs,ys,"lineal")');
+      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Función Lineal", "callback", 'mostrarOpciones(xs,ys,"lineal")');
       btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Función Parabola", "callback", 'mostrarOpciones(xs,ys,"cuadratica")');
       btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Función Exponencial", "callback", 'mostrarOpciones(xs,ys,"exponencial")');
       btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Función Potencial", "callback", 'mostrarOpciones(xs,ys,"potencial")');
@@ -343,14 +362,13 @@ function principal
   btn_salir = uimenu("label", "Salir", "callback", "salirPrograma");
 endfunction
 
-function dlg_ingresarDatos
+function dlg_ingresarDatos % Ingresar nuevo set de datos
   global xs;
   global ys;
   global p;
   global decimales;
   
   flag = false
-  
   do
     puntos = inputdlg("Cuantos puntos (x,y) desea ingresar?");
     p = str2num(cell2mat(puntos));
@@ -390,6 +408,108 @@ function dlg_ingresarDatos
   dec = inputdlg("Ingrese la cantidad de decimales (redondeo) que se mostraran");
   decimales = cell2mat(dec);
 endfunction
+
+function salirPrograma
+  global h;
+  close(h);
+endfunction
+
+%% +++++++++++++++++++++++++++ MENU FUNCIONES ++++++++++++++++++++++++++++++
+
+
+
+%******************************************************************************************
+
+
+function mostrarOpciones(xs,ys,nombreFuncion)
+	global h;
+  global func;
+  global xs;
+  global ys;
+  global p;
+  global A;
+  global B;
+  global a2;
+  global b2;
+  global c2;
+  
+	clf;
+  set(h, "name", cstrcat("Aproximación ", nombreFuncion));	
+  set(h, "position", [330,95,780,560]);
+  f = str2func(nombreFuncion);
+  f(1);
+
+  %% ++++++++++
+	uicontrol("style", "text", "string", "Función aproximante:", "fontsize", 14, "position", [230 505 190 30], "backgroundcolor", "white");
+	uicontrol("style", "text", "string", toupper(nombreFuncion), "fontsize", 14, "position", [430 505 128 30], "backgroundcolor", "white", "fontangle", "italic");
+	
+  panel = uipanel("title", "Cálculo", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
+    uicontrol("parent", panel, "style", "text", "string", cstrcat("   X\n  -------\n",disp(xs)), "position", [10 30 66 330]);
+    uicontrol("parent", panel, "style", "text", "string", cstrcat("   Y\n  -------\n",disp(ys)), "position", [70 30 66 330]);
+    uicontrol("parent", panel, "style", "text", "string", cstrcat("  Matriz A\n",disp(A)), "position", [320 275 190 90]);
+    uicontrol("parent", panel, "style", "text", "string", cstrcat("  Matriz B\n",disp(B)), "position", [320 175 190 90]);
+    uicontrol("parent", panel, "style", "text", "string", "AX = B", "fontsize", 14, "position", [320 130 190 30]);
+
+    uicontrol("parent", panel, "style", "text", "string", "=>", "fontsize", 18, "position", [340 62 40 50]);
+    uicontrol("parent", panel, "style", "text", "string", cstrcat("a = ", disp(a2), "b = ", disp(b2)), "fontsize", 11, "position", [384 50 120 75]);
+    
+  uicontrol("style", "text", "string", func, "fontsize", 12, "position", [85 60 600 30]);
+	
+  switch nombreFuncion % Menu Graficar
+    case "lineal"
+      uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'lineal')");
+    case "cuadratica"
+      uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'cuadratica')");
+      uicontrol("parent", panel, "style", "text", "string", cstrcat("a = ", disp(a2), "b = ", disp(b2), "c = ", disp(c2)), "fontsize", 11, "position", [384 50 120 75]);
+    case "exponencial"
+      uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'exponencial')");
+    case "potencial"
+      uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'potencial')");
+    case "hiperbola"
+      uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'hiperbola')");
+  endswitch
+  uimenu("label", "Volver a Menu Principal", "callback", "salir");
+  
+endfunction
+
+function graficar(xs,ys,funcion)
+  global func;
+  global h;
+  global a2;
+  global b2;
+  
+  clf;
+  set(h, 'Position', [330,100,780,530]);
+  
+  f = str2func(funcion);
+  x = linspace(min(xs)-2, max(xs)+2);
+    
+  plot(x, f(x), xs, ys, "*r");
+  xlabel("Eje x", 'Fontsize', 12);
+  ylabel("Eje y", 'Fontsize', 12);
+  title(cstrcat("Aproximación ", funcion), 'FontSize', 18, 'fontweight', "bold");
+  
+  switch funcion % Menu Graficar
+    case "lineal"
+      uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'lineal')");
+    case "cuadratica"
+      uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'cuadratica')");
+    case "exponencial"
+      uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'exponencial')");
+      k = sprintf("(%i*x)", a2);
+      func = sprintf("f(x) = %i*e%s", b2, elevado(k));
+    case "potencial"
+      uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'potencial')");
+      k = sprintf("(%i)", a2);
+      func = sprintf("f(x) = %i*x%s", b2, elevado(k));
+    case "hiperbola"
+      uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'hiperbola')");
+  endswitch
+  
+  legend(func);
+endfunction
+
+%% +++++++++++++++++++++++ COMPARACION DE FUNCIONES +++++++++++++++++++++++++
 
 function salir
   global h;
@@ -443,7 +563,7 @@ function comparar
 
   % "backgroundcolor", "white"
   set(h, "name", "Comparación de Funciones");
-  set(h, "position", [330,136,780,600]);
+  set(h, "position", [330,90,780,600]);
   uimenu("label", "Volver", "callback", "salir");
   uicontrol("style", "text", "string", "Comparación de f(x)", "fontsize", 14, "position", [85 528 600 30], "backgroundcolor", "white");
   uicontrol("style", "text", "string", matriz1, "fontname", "Consolas", "position", [80 276 600 250], "backgroundcolor", "white");
@@ -457,29 +577,6 @@ function comparar
   printf("      i         X       Y       Mod.1    Mod.2    Mod.3    Mod.4    Mod.5    Err.1    Err.2    Err.3    Err.4    Err.5\n");
   printf("   ====================================================================================================================\n");
   disp(matriz);
-endfunction
-
-function graficar(xs,ys,funcion)
-  global func;
-  global h;
-  
-  clf;
-  
-  
-  global nombreFunc;
-  uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,nombreFunc)");
-  
-  
-    
-  f = str2func(funcion);
-  x = linspace(min(xs)-2, max(xs)+2);
-    
-  plot(x, f(x), xs, ys, "*r");
-  set(h, 'Position', [314,150,732,520]);
-  xlabel("Eje x", 'Fontsize', 12);
-  ylabel("Eje y", 'Fontsize', 12);
-  title(cstrcat("Aproximación ", funcion), 'FontSize', 18, 'fontweight', "bold");
-  legend(func);
 endfunction
 
 function menorError
@@ -537,70 +634,5 @@ function menorError
   endfor;
   msgbox(result);
 endfunction
-
-
-%******************************************************************************************
-
-function salirPrograma
-  global h;
-  close(h);
-endfunction
-
-function mostrarOpciones(xs,ys,nombreFuncion)
-
-	global h;
-	
-	global nombreFunc;
-	
-	clf;
-	
-  switch(nombreFuncion)
-	case 'lineal'
-		nombreFunc = sprintf("lineal");
-	case 'cuadratica'
-		nombreFunc = sprintf("cuadratica");
-	case 'exponencial'
-		nombreFunc = sprintf("exponencial");
-	case 'potencial'
-		nombreFunc = sprintf("potencial");
-	case 'hiperbola'
-		nombreFunc = sprintf("hiperbola");
-	endswitch
-  
-	set(h, "name", "Seleccionar accion");
-	set(h, "position", [314,150,732,520]);
-
-	uicontrol("style", "text", "string", "Seleccionar opcion desde el menu", "fontsize", 14, "position", [85 350 600 30], "backgroundcolor", "white");
-	uimenu("label", "Funcion aproximante", "callback", "mostrarFuncionAproximante");
-	uimenu("label", "Detalle del calculo", "callback", "");
-	uimenu("label", "Distribucion de puntos", "callback", "graficar(xs,ys,nombreFunc)");
-	uimenu("label", "Volver a menu principal", "callback", "salir");
-				
-endfunction
-
-function mostrarFuncionAproximante
-
-	global nombreFunc;
-	global func;
-	global h;
-	
-	global xs;
-	global ys;
-	
-	clf;
-
-	set(h, "name", "Funcion aproximante");
-	set(h, "position", [314,150,732,520]);
-	
-	uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,nombreFunc)");
-
-	uicontrol("style", "text", "string", "Funcion aproximante", "fontsize", 14, "position", [85 400 600 30], "backgroundcolor", "white");
-	uicontrol("style", "text", "string", nombreFunc, "fontsize", 12, "position", [85 350 600 30], "backgroundcolor", "white");
-	uicontrol("style", "text", "string", func, "fontsize", 12, "position", [85 300 600 30], "backgroundcolor", "white");
- 
-	
-endfunction
-
-	
 
 main;
