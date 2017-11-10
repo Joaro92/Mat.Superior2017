@@ -658,12 +658,15 @@ function mostrarTabla(nombreFuncion)
   global sumaX2porY;
   global sumaXporLogY;
   global sumaLogY;
-  
+  global sumaLogX;
+  global sumaLogX2;
+  global sumaLogXporLogY;
+  global sumaInvY;
+  global sumaXporInvY;
  
   clf;
-  
-  
-  
+
+ 
   switch nombreFuncion % Tabla Aproximaciones
     case "lineal"
 		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'lineal')");
@@ -688,13 +691,25 @@ function mostrarTabla(nombreFuncion)
 			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
 			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
 			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^3\n  -------\n",disp(log(ys)),"  ",disp(sumaLogY)), "position", [211 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^4\n  -------\n",disp(xs.*log(ys)),"  ",disp(sumaXporLogY)), "position", [278 30 66 330]);
-
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(Y)\n  -------\n",disp(log(ys)),"  ",disp(sumaLogY)), "position", [211 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*log(Y)\n  -------\n",disp(xs.*log(ys)),"  ",disp(sumaXporLogY)), "position", [278 30 66 330]);
     case "potencial"
-      ;
+		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'potencial')");
+		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [83 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)\n  -------\n",disp(log(xs)),"  ",disp(sumaLogX)), "position", [154 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(Y)\n  -------\n",disp(log(ys)),"  ",disp(sumaLogY)), "position", [226 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)^2\n  -------\n",disp(log(xs).^2),"  ",disp(sumaLogX2)), "position", [298 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)*log(Y)\n  -------\n",disp(log(xs).*log(ys)),"  ",disp(sumaLogXporLogY)), "position", [370 30 90 330]);
     case "hiperbola"
-      ;
+		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'hiperbola')");
+		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [83 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  1/Y\n  -------\n",disp(1./ys),"  ",disp(sumaInvY)), "position", [211 30 80 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*1/Y\n  -------\n",disp(xs.*(1./ys)),"  ",disp(sumaXporInvY)), "position", [300 30 80 330]);	  
   endswitch
 
 endfunction
