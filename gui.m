@@ -315,15 +315,16 @@ function comenzar % Empieza de cero ingresando los valores
   
   close(h);
   
-  global p;
-  global xs;
-  global ys;
-  global decimales;
-  p = 3;
-  xs = [3;4;5];
-  yx = [6;7;8];
-  decimales = "4";
-  %dlg_ingresarDatos;
+  %global p;
+  %global xs;
+  %global ys;
+  %global decimales;
+  %p = 3;
+  %xs = [3;4;5];
+  %yx = [6;7;8];
+  %decimales = "4";
+  
+  dlg_ingresarDatos;
   principal;
 endfunction
 
