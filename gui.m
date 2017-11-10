@@ -348,6 +348,7 @@ function principal
       btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbola", "callback", 'graficar(xs,ys,"hiperbola")');
 
   btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
+  btn_salir = uimenu("label", "Salir", "callback", "salirPrograma");
 endfunction
 
 function dlg_ingresarDatos
@@ -356,8 +357,17 @@ function dlg_ingresarDatos
   global p;
   global decimales;
   
-  puntos = inputdlg("Cuantos puntos (x,y) desea ingresar?");
-  p = str2num(cell2mat(puntos));
+  flag = false
+  
+  do
+    puntos = inputdlg("Cuantos puntos (x,y) desea ingresar?");
+    p = str2num(cell2mat(puntos));
+    if (p > 1)
+      flag = true;
+    else
+      errordlg("Ingreso una cantidad de valores menor a 2"); 
+    endif
+  until (flag);
   
   flag = false
   do
@@ -393,6 +403,11 @@ function salir
   global h;
   close(h);
   principal;
+endfunction
+
+function salirPrograma
+  global h;
+  close(h);
 endfunction
 
 function comparar
