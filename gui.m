@@ -352,11 +352,11 @@ function principal % Ventana Principal
 
   btn_funciones = uimenu("label", "Funciones");
     btn_aproximacion_elegir = uimenu(btn_funciones, "label", "Aproximar Mediante:");
-      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Función Lineal", "callback", 'mostrarOpciones(xs,ys,"lineal")');
-      btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Función Parabola", "callback", 'mostrarOpciones(xs,ys,"cuadratica")');
-      btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Función Exponencial", "callback", 'mostrarOpciones(xs,ys,"exponencial")');
-      btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Función Potencial", "callback", 'mostrarOpciones(xs,ys,"potencial")');
-      btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbola", "callback", 'mostrarOpciones(xs,ys,"hiperbola")');
+      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Recta de Mínimos Cuadrados", "callback", 'mostrarOpciones(xs,ys,"lineal")');
+      btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Parábola de Mínimos Cuadrados", "callback", 'mostrarOpciones(xs,ys,"cuadratica")');
+      btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Aproximación Exponencial", "callback", 'mostrarOpciones(xs,ys,"exponencial")');
+      btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Aproximación Potencial", "callback", 'mostrarOpciones(xs,ys,"potencial")');
+      btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Aproximación Hipérbola", "callback", 'mostrarOpciones(xs,ys,"hiperbola")');
 
   btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
   btn_salir = uimenu("label", "Salir", "callback", "salirPrograma");
@@ -422,7 +422,7 @@ endfunction
 
 
 function mostrarOpciones(xs,ys,nombreFuncion)
-	global h;
+  global h;
   global func;
   global xs;
   global ys;
@@ -432,6 +432,7 @@ function mostrarOpciones(xs,ys,nombreFuncion)
   global a2;
   global b2;
   global c2;
+  
   
 	clf;
   set(h, "name", cstrcat("Aproximación ", nombreFuncion));	
@@ -454,19 +455,24 @@ function mostrarOpciones(xs,ys,nombreFuncion)
     uicontrol("parent", panel, "style", "text", "string", cstrcat("a = ", disp(a2), "b = ", disp(b2)), "fontsize", 11, "position", [384 50 120 75]);
     
   uicontrol("style", "text", "string", func, "fontsize", 12, "position", [85 60 600 30]);
-	
-  switch nombreFuncion % Menu Graficar
+  
+  switch (nombreFuncion) % Menu Graficar
     case "lineal"
       uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'lineal')");
+	  uimenu("label", "Tabla de Sumatorias", "callback", "mostrarTabla('lineal')");
     case "cuadratica"
       uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'cuadratica')");
       uicontrol("parent", panel, "style", "text", "string", cstrcat("a = ", disp(a2), "b = ", disp(b2), "c = ", disp(c2)), "fontsize", 11, "position", [384 50 120 75]);
+	  uimenu("label", "Tabla de Sumatorias", "callback", "mostrarTabla('cuadratica')");
     case "exponencial"
       uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'exponencial')");
+	  uimenu("label", "Tabla de Sumatorias", "callback", "mostrarTabla('exponencial')");
     case "potencial"
       uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'potencial')");
+	  uimenu("label", "Tabla de Sumatorias", "callback", "mostrarTabla('potencial')");
     case "hiperbola"
       uimenu("label", "Graficar Función", "callback", "graficar(xs,ys,'hiperbola')");
+	  uimenu("label", "Tabla de Sumatorias", "callback", "mostrarTabla('hiperbola')");
   endswitch
   uimenu("label", "Volver a Menu Principal", "callback", "salir");
   
@@ -636,6 +642,61 @@ function menorError
     endif;    
   endfor;
   msgbox(result);
+endfunction
+
+function mostrarTabla(nombreFuncion)
+	  
+  
+  global xs;
+  global ys;
+  global sumaX;
+  global sumaY;
+  global sumaXcuadrado;
+  global sumaXporY;
+  global sumaXcubo;
+  global sumaXcuarta;
+  global sumaX2porY;
+  global sumaXporLogY;
+  global sumaLogY;
+  
+ 
+  clf;
+  
+  
+  
+  switch nombreFuncion % Tabla Aproximaciones
+    case "lineal"
+		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'lineal')");
+		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*Y\n  -------\n",disp(xs.*ys),"  ",disp(sumaXporY)), "position", [211 30 66 330]);	
+    case "cuadratica"
+		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'cuadratica')");
+		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^3\n  -------\n",disp(xs.^3),"  ",disp(sumaXcubo)), "position", [211 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^4\n  -------\n",disp(xs.^4),"  ",disp(sumaXcuarta)), "position", [278 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*Y\n  -------\n",disp(xs.*ys),"  ",disp(sumaXporY)), "position", [345 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2*Y\n  -------\n",disp(xs.^2.*ys),"  ",disp(sumaX2porY)), "position", [412 30 66 330]);
+    case "exponencial"
+		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'exponencial')");
+		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^3\n  -------\n",disp(log(ys)),"  ",disp(sumaLogY)), "position", [211 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^4\n  -------\n",disp(xs.*log(ys)),"  ",disp(sumaXporLogY)), "position", [278 30 66 330]);
+
+    case "potencial"
+      ;
+    case "hiperbola"
+      ;
+  endswitch
+
 endfunction
 
 main;
