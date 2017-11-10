@@ -335,7 +335,7 @@ function comenzar % Empieza de cero ingresando los valores
   yx = [6;7;8];
   decimales = "4";
   
-  %dlg_ingresarDatos;
+  dlg_ingresarDatos;
   principal;
 endfunction
 
@@ -560,11 +560,14 @@ function comparar
   matriz2 = "      i       Err.1     Err.2     Err.3     Err.4     Err.5      \n";
   matriz2 = cstrcat(matriz2, "   ==============================================================     \n");
   matriz2 = cstrcat(matriz2, disp(M2));
-
+  
+  leyenda = "   1: Recta de Mínimos Cuadrados - 2: Parábola de Mínimos Cuadrados \n3: Aproximación Exponencial - 4: Aproximación Potencial - 5: Aproximación Hipérbola";
+  
   % "backgroundcolor", "white"
   set(h, "name", "Comparación de Funciones");
   set(h, "position", [330,90,780,600]);
   uimenu("label", "Volver", "callback", "salir");
+  uicontrol("style", "text", "string", leyenda, "fontsize", 10, "position", [90 560 600 35], "backgroundcolor", "white");
   uicontrol("style", "text", "string", "Comparación de f(x)", "fontsize", 14, "position", [85 528 600 30], "backgroundcolor", "white");
   uicontrol("style", "text", "string", matriz1, "fontname", "Consolas", "position", [80 276 600 250], "backgroundcolor", "white");
   uicontrol("style", "text", "string", "Error de f(x)", "fontsize", 14, "position", [85 252 600 30], "backgroundcolor", "white");
