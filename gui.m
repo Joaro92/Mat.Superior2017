@@ -1,4 +1,6 @@
+
 clear
+
 
 %% ++++++++++++++++++++++++ DEFINICIÓN DE VARIABLES ++++++++++++++++++++++++++
 global xs = [1; 2; 3];
@@ -21,7 +23,7 @@ global sumaLogXporLogY;
 global sumaLogY;
 global sumaInvY;
 global error;
-
+global nombreFunc;
 
 %% ++++++++++++++++++++++++++++ FUNCIONES ++++++++++++++++++++++++++++++++++++
 function n=redondeo(num, decimales)
@@ -272,17 +274,7 @@ endfunction
 %  Mat = [xs ys];
 %  matriz = sprintf("%8.3f %8.3f\n", flip(rot90(Mat)));
 
-function mostrarBotones(xs,ys,nombreFunc)
 
-	d = figure("MenuBar","None");
-	
-	gp = uibuttongroup (d, "Position", [ 0 0.9 1 1])
-
-		b1 = uicontrol (gp, "string", "FunciÃ³n aproximante", "Position", [ 10 10 150 30 ], "callback", 'msgbox(func)'); %no es lo mejor pero es la forma que encontre
-		b2 = uicontrol (gp, "string", "Detalle del cÃ¡lculo", "Position", [ 200 10 150 30 ], "callback", '-'); %aca iria la tabla
-		b3 = uicontrol (gp, "string", "DistribuciÃ³n de puntos", "Position", [ 390 10 150 30 ], "callback", 'graficar(xs,ys,nombreFunc)'); %no esta tomando nombreFunc como "hiperbola"
-
-endfunction
 
 %text(0.790,0.70, "Conjunto de puntos actuales", "fontsize", 14, "color", "black");
 %text(0.840,0.60, "     X       Y\n-------------------", "fontsize", 14, "color", "black", "fontname", "Consolas");
@@ -341,11 +333,11 @@ function principal
 
   btn_funciones = uimenu("label", "Funciones");
     btn_aproximacion_elegir = uimenu(btn_funciones, "label", "Aproximar Mediante:");
-      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Función Recta", "callback", 'graficar(xs,ys,"lineal")');
-      btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Función Parabola", "callback", 'graficar(xs,ys,"cuadratica")');
-      btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Función Exponencial", "callback", 'graficar(xs,ys,"exponencial")');
-      btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Función Potencial", "callback", 'graficar(xs,ys,"potencial")');
-      btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbola", "callback", 'graficar(xs,ys,"hiperbola")');
+      btn_recta = uimenu(btn_aproximacion_elegir, "label", "Función Recta", "callback", 'mostrarOpciones(xs,ys,"lineal")');
+      btn_parabola = uimenu(btn_aproximacion_elegir, "label", "Función Parabola", "callback", 'mostrarOpciones(xs,ys,"cuadratica")');
+      btn_exponencial = uimenu(btn_aproximacion_elegir, "label", "Función Exponencial", "callback", 'mostrarOpciones(xs,ys,"exponencial")');
+      btn_potencial = uimenu(btn_aproximacion_elegir, "label", "Función Potencial", "callback", 'mostrarOpciones(xs,ys,"potencial")');
+      btn_hiperbola = uimenu(btn_aproximacion_elegir, "label", "Función Hipérbola", "callback", 'mostrarOpciones(xs,ys,"hiperbola")');
 
   btn_comparacion = uimenu("label", "Comparar Aproximaciones", "callback", "comparar");
   btn_salir = uimenu("label", "Salir", "callback", "salirPrograma");
@@ -403,11 +395,6 @@ function salir
   global h;
   close(h);
   principal;
-endfunction
-
-function salirPrograma
-  global h;
-  close(h);
 endfunction
 
 function comparar
@@ -476,6 +463,14 @@ function graficar(xs,ys,funcion)
   global func;
   global h;
   
+  clf;
+  
+  
+  global nombreFunc;
+  uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,nombreFunc)");
+  
+  
+    
   f = str2func(funcion);
   x = linspace(min(xs)-2, max(xs)+2);
     
@@ -542,5 +537,70 @@ function menorError
   endfor;
   msgbox(result);
 endfunction
+
+
+%******************************************************************************************
+
+function salirPrograma
+  global h;
+  close(h);
+endfunction
+
+function mostrarOpciones(xs,ys,nombreFuncion)
+
+	global h;
+	
+	global nombreFunc;
+	
+	clf;
+	
+  switch(nombreFuncion)
+	case 'lineal'
+		nombreFunc = sprintf("lineal");
+	case 'cuadratica'
+		nombreFunc = sprintf("cuadratica");
+	case 'exponencial'
+		nombreFunc = sprintf("exponencial");
+	case 'potencial'
+		nombreFunc = sprintf("potencial");
+	case 'hiperbola'
+		nombreFunc = sprintf("hiperbola");
+	endswitch
+  
+	set(h, "name", "Seleccionar accion");
+	set(h, "position", [314,150,732,520]);
+
+	uicontrol("style", "text", "string", "Seleccionar opcion desde el menu", "fontsize", 14, "position", [85 350 600 30], "backgroundcolor", "white");
+	uimenu("label", "Funcion aproximante", "callback", "mostrarFuncionAproximante");
+	uimenu("label", "Detalle del calculo", "callback", "");
+	uimenu("label", "Distribucion de puntos", "callback", "graficar(xs,ys,nombreFunc)");
+	uimenu("label", "Volver a menu principal", "callback", "salir");
+				
+endfunction
+
+function mostrarFuncionAproximante
+
+	global nombreFunc;
+	global func;
+	global h;
+	
+	global xs;
+	global ys;
+	
+	clf;
+
+	set(h, "name", "Funcion aproximante");
+	set(h, "position", [314,150,732,520]);
+	
+	uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,nombreFunc)");
+
+	uicontrol("style", "text", "string", "Funcion aproximante", "fontsize", 14, "position", [85 400 600 30], "backgroundcolor", "white");
+	uicontrol("style", "text", "string", nombreFunc, "fontsize", 12, "position", [85 350 600 30], "backgroundcolor", "white");
+	uicontrol("style", "text", "string", func, "fontsize", 12, "position", [85 300 600 30], "backgroundcolor", "white");
+ 
+	
+endfunction
+
+	
 
 main;
