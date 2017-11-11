@@ -407,6 +407,7 @@ function dlg_ingresarDatos % Ingresar nuevo set de datos
   
   dec = inputdlg("Ingrese la cantidad de decimales (redondeo) que se mostraran");
   decimales = cell2mat(dec);
+    
 endfunction
 
 function salirPrograma
@@ -663,7 +664,8 @@ function mostrarTabla(nombreFuncion)
   global sumaLogXporLogY;
   global sumaInvY;
   global sumaXporInvY;
- 
+
+  
   clf;
 
  
@@ -671,47 +673,66 @@ function mostrarTabla(nombreFuncion)
     case "lineal"
 		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'lineal')");
 		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*Y\n  -------\n",disp(xs.*ys),"  ",disp(sumaXporY)), "position", [211 30 66 330]);	
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(redondeoMatriz(xs)),"  ",disp(redondeoMatriz(sumaX))), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(redondeoMatriz(ys)),"  ",disp(redondeoMatriz(sumaY))), "position", [77 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(redondeoMatriz(xs.^2)),"  ",disp(redondeoMatriz(sumaXcuadrado))), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*Y\n  -------\n",disp(redondeoMatriz(xs.*ys)),"  ",disp(redondeoMatriz(sumaXporY))), "position", [211 30 66 330]);	
     case "cuadratica"
 		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'cuadratica')");
 		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^3\n  -------\n",disp(xs.^3),"  ",disp(sumaXcubo)), "position", [211 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^4\n  -------\n",disp(xs.^4),"  ",disp(sumaXcuarta)), "position", [278 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*Y\n  -------\n",disp(xs.*ys),"  ",disp(sumaXporY)), "position", [345 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2*Y\n  -------\n",disp(xs.^2.*ys),"  ",disp(sumaX2porY)), "position", [412 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(redondeoMatriz(xs)),"  ",disp(redondeoMatriz(sumaX))), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(redondeoMatriz(ys)),"  ",disp(redondeoMatriz(sumaY))), "position", [77 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(redondeoMatriz(xs.^2)),"  ",disp(redondeoMatriz(sumaXcuadrado))), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^3\n  -------\n",disp(redondeoMatriz(xs.^3)),"  ",disp(redondeoMatriz(sumaXcubo))), "position", [211 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^4\n  -------\n",disp(redondeoMatriz(xs.^4)),"  ",disp(redondeoMatriz(sumaXcuarta))), "position", [278 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*Y\n  -------\n",disp(redondeoMatriz(xs.*ys)),"  ",disp(redondeoMatriz(sumaXporY))), "position", [345 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2*Y\n  -------\n",disp(redondeoMatriz(xs.^2.*ys)),"  ",disp(redondeoMatriz(sumaX2porY))), "position", [412 30 66 330]);
     case "exponencial"
 		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'exponencial')");
 		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [77 30 66 330]);     
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(Y)\n  -------\n",disp(log(ys)),"  ",disp(sumaLogY)), "position", [211 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*log(Y)\n  -------\n",disp(xs.*log(ys)),"  ",disp(sumaXporLogY)), "position", [278 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(redondeoMatriz(xs)),"  ",disp(redondeoMatriz(sumaX))), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(redondeoMatriz(ys)),"  ",disp(redondeoMatriz(sumaY))), "position", [77 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(redondeoMatriz(xs.^2)),"  ",disp(redondeoMatriz(sumaXcuadrado))), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(Y)\n  -------\n",disp(redondeoMatriz(log(ys))),"  ",disp(redondeoMatriz(sumaLogY))), "position", [211 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*log(Y)\n  -------\n",disp(redondeoMatriz(xs.*log(ys))),"  ",disp(redondeoMatriz(sumaXporLogY))), "position", [278 30 66 330]);
     case "potencial"
 		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'potencial')");
 		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [83 30 66 330]);     
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)\n  -------\n",disp(log(xs)),"  ",disp(sumaLogX)), "position", [154 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(Y)\n  -------\n",disp(log(ys)),"  ",disp(sumaLogY)), "position", [226 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)^2\n  -------\n",disp(log(xs).^2),"  ",disp(sumaLogX2)), "position", [298 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)*log(Y)\n  -------\n",disp(log(xs).*log(ys)),"  ",disp(sumaLogXporLogY)), "position", [370 30 90 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(redondeoMatriz(xs)),"  ",disp(redondeoMatriz(sumaX))), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(redondeoMatriz(ys)),"  ",disp(redondeoMatriz(sumaY))), "position", [83 30 66 330]);     
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)\n  -------\n",disp(redondeoMatriz(log(xs))),"  ",disp(redondeoMatriz(sumaLogX))), "position", [154 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(Y)\n  -------\n",disp(redondeoMatriz(log(ys))),"  ",disp(redondeoMatriz(sumaLogY))), "position", [226 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)^2\n  -------\n",disp(redondeoMatriz(log(xs).^2)),"  ",disp(redondeoMatriz(sumaLogX2))), "position", [298 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  log(X)*log(Y)\n  -------\n",disp(redondeoMatriz(log(xs).*log(ys))),"  ",disp(redondeoMatriz(sumaLogXporLogY))), "position", [370 30 90 330]);
     case "hiperbola"
 		uimenu("label", "Volver", "callback", "mostrarOpciones(xs,ys,'hiperbola')");
 		panel = uipanel("title", "Sumatorias", "position", [.15 .20 .7 .65]);%, "backgroundcolor", "white");
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(xs),"  ",disp(sumaX)), "position", [10 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(ys),"  ",disp(sumaY)), "position", [83 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(xs.^2),"  ",disp(sumaXcuadrado)), "position", [144 30 66 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  1/Y\n  -------\n",disp(1./ys),"  ",disp(sumaInvY)), "position", [211 30 80 330]);
-			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*1/Y\n  -------\n",disp(xs.*(1./ys)),"  ",disp(sumaXporInvY)), "position", [300 30 80 330]);	  
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X\n  -------\n",disp(redondeoMatriz(xs)),"  ",disp(redondeoMatriz(sumaX))), "position", [10 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  Y\n  -------\n",disp(redondeoMatriz(ys)),"  ",disp(redondeoMatriz(sumaY))), "position", [83 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X^2\n  -------\n",disp(redondeoMatriz(xs.^2)),"  ",disp(redondeoMatriz(sumaXcuadrado))), "position", [144 30 66 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  1/Y\n  -------\n",disp(redondeoMatriz(1./ys)),"  ",disp(redondeoMatriz(sumaInvY))), "position", [211 30 80 330]);
+			uicontrol("parent", panel, "style", "text", "string", cstrcat("  X*1/Y\n  -------\n",disp(redondeoMatriz(xs.*(1./ys))),"  ",disp(redondeoMatriz(sumaXporInvY))), "position", [300 30 80 330]);	  
+
   endswitch
 
 endfunction
+
+
+function ret=redondeoMatriz(matriz)
+	
+	global decimales;
+
+	rows = rows(matriz);
+	cols = columns(matriz);
+	for i = 1:rows
+	  for j = 1:cols  
+		aux = sprintf(cstrcat("%8.",decimales,"f"), matriz(i,j));
+		n = str2num(aux);
+		matriz(i,j) = n;	
+	  endfor
+	endfor
+	ret = matriz;
+endfunction
+
 
 main;
